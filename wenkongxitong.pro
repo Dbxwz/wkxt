@@ -29,16 +29,17 @@ SOURCES += \
     exchangeinfo.cpp \
     mtcpsocket.cpp \
     mtcpsever.cpp \
-    loginfo.cpp
+    loginfo.cpp \
+    usercontroler.cpp
 
 HEADERS += \
         mainwindow.h \
-    D:/Sublime Text 3/exchangeInfo.h \
     exchangeInfo.h \
     exchangeinfo.h \
     mtcpsocket.h \
     mtcpsever.h \
-    loginfo.h
+    loginfo.h \
+    usercontroler.h
 
 FORMS += \
         mainwindow.ui

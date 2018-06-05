@@ -7,9 +7,14 @@ mTcpSocket::mTcpSocket()
     connect(this,SIGNAL(wait_for_ack(exchangeInfo)),this,SLOT(waitAck(exchangeInfo)));
 }
 
+void mTcpSocket::run()
+{
+
+}
+
 void mTcpSocket::severReadDate()
  {
-    this->mSocket->read(getInfo);
+    getInfo = this->mSocket->readAll();
 
      if(getInfo.isEmpty())
      {
@@ -17,24 +22,24 @@ void mTcpSocket::severReadDate()
      }
 
 
-     exchangeInfo obj = new exchangeInfo(getInfo);
+     exchangeInfo obj(getInfo);
      QString type = obj.getType();
-     switch (type) {
-     case "AskWindSupply":
+     if(type.compare("AskWindSupply"))
+     {
          //调用报表函数处理
-         exchangeInfo reply = new exchangeInfo();
+         exchangeInfo reply;
          reply.replyForWindSupply(true);
          this->mSocket->write(reply.toByte());
-         break;
-     case "StopWindSupply":
+     } else if(type.compare("StopWindSupply"))
+     {
          //.....
-         exchangeInfo reply = new exchangeInfo();
+         exchangeInfo reply;
          reply.replyForStopWindSupply(true);
          this->mSocket->write(reply.toByte());
-         break;
-     case "AskLogin":
-         exchangeInfo reply = new exchangeInfo();
-         if()//此处需要接口
+     } else if(type.compare("AskLogin"))
+     {
+         exchangeInfo reply;
+         if(true)//此处需要接口
          {
              reply.replyForLogin(true);
              this->setHome(obj.getRoom());
@@ -44,23 +49,20 @@ void mTcpSocket::severReadDate()
              reply.replyForLogin(false);
          }
          this->mSocket->write(reply.toByte());
-         break;
-     case "AskLogout":
+     } else if(type.compare("AskLogout"))
+     {
          socketClose();
-         socket_disconnect();
-         break;
-     case "State":
+         emit this->socket_disconnect();
+     } else if(type.compare("State"))
+     {
          //..
-         exchangeInfo reply = new exchangeInfo();
+         exchangeInfo reply;
          reply.replyForState(true);
          this->mSocket->write(reply.toByte());
-         break;
-     case "ReplyForEnergyAndCost":
-
-         break;
-     default:
-         break;
+     } else if(type.compare("ReplyForEnergyAndCost"))
+     {
      }
+
  }
 
 void mTcpSocket::severWriteDate()
@@ -77,7 +79,7 @@ void mTcpSocket::waitAck(exchangeInfo info)
      QTime startTime = QTime::currentTime();
      while(true)
      {
-         exchangeInfo obj = new exchangeInfo(getInfo);
+         exchangeInfo obj(getInfo);
          if(obj.getType() == "ReplyForEnergyAndCost")
              break;
          QTime endtime = QTime::currentTime();
@@ -96,5 +98,25 @@ void mTcpSocket::socketClose()
 void mTcpSocket::onDisconnect()
 {
     this->setIsVaild(false);
-    socket_disconnect();//发送一个断开连接SIGNAL
+    emit socket_disconnect();//发送一个断开连接SIGNAL
+}
+
+void mTcpSocket::setHome(int a)
+{
+    this->home = a;
+}
+
+void mTcpSocket::setIsVaild(bool a)
+{
+    this->isVaild = a;
+}
+
+int mTcpSocket::getHome()
+{
+    return this->home;
+}
+
+bool mTcpSocket::getIsVaild()
+{
+    return this->isVaild;
 }

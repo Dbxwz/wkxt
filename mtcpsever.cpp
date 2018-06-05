@@ -57,7 +57,7 @@ void mTcpSever::send2home(int home, exchangeInfo info)
 
 QVector<int> mTcpSever::getLinkedHome()
 {
-    Vector<int> vec;
+    QVector<int> vec;
     for(int i = 0; i < MAX_CONNECT; i++)
     {
         if(msocket[i].getIsVaild() == true)

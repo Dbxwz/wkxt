@@ -1,6 +1,6 @@
 #ifndef LOGINFO_H
 #define LOGINFO_H
-
+#include<QString>
 
 class logInfo
 {

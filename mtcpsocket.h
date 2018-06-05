@@ -6,9 +6,14 @@
 
 class mTcpSocket:public QThread
 {
+    Q_OBJECT
 private:
     bool isVaild;//判断当前套接字是否有效
     int home;//当前线程绑定的房间号
+
+signals:
+    wait_for_ack(exchangeInfo info);
+    socket_disconnect();
 
 public:
     mTcpSocket();//将传入的socket
@@ -26,10 +31,6 @@ private slots:
     void severReadDate();//接收数据
     void waitAck(exchangeInfo info);//等待ack
     void onDisconnect();//断线处理
-
-signals:
-    void wait_for_ack(exchangeInfo info);
-    void socket_disconnect();
 
 protected:
     void run();//重写run函数,内部进行逻辑分析
