@@ -16,6 +16,7 @@ public:
     QByteArray getInfo;//得到信息的缓存
     exchangeInfo sendInfo;//发送信息的缓存
     void socketClose();//关闭连接
+    void severWriteDate();//发送数据,信号连接
     void setIsVaild(bool a);
     bool getIsVaild();
     void setHome(int a);
@@ -23,7 +24,6 @@ public:
 
 private slots:
     void severReadDate();//接收数据
-    void severWriteDate();//发送数据,信号连接
     void waitAck(exchangeInfo info);//等待ack
     void onDisconnect();//断线处理
 

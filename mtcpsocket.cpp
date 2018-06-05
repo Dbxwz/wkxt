@@ -34,9 +34,10 @@ void mTcpSocket::severReadDate()
          break;
      case "AskLogin":
          exchangeInfo reply = new exchangeInfo();
-         if()
+         if()//此处需要接口
          {
              reply.replyForLogin(true);
+             this->setHome(obj.getRoom());
          }
          else
          {
@@ -45,12 +46,14 @@ void mTcpSocket::severReadDate()
          this->mSocket->write(reply.toByte());
          break;
      case "AskLogout":
-         //..
+         socketClose();
+         socket_disconnect();
          break;
      case "State":
          //..
          exchangeInfo reply = new exchangeInfo();
          reply.replyForState(true);
+         this->mSocket->write(reply.toByte());
          break;
      case "ReplyForEnergyAndCost":
 
@@ -86,11 +89,12 @@ void mTcpSocket::waitAck(exchangeInfo info)
 void mTcpSocket::socketClose()
 {
     this->setIsVaild(false);
+    this->setHome(-1);
     this->mSocket->close();
 }
 
 void mTcpSocket::onDisconnect()
 {
     this->setIsVaild(false);
-    socket_disconnect();
+    socket_disconnect();//发送一个断开连接SIGNAL
 }

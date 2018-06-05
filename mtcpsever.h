@@ -16,6 +16,8 @@ private slots:
 
 public:
     explicit mTcpSever();
+    void send2home(int home, exchangeInfo info);//给指定房间发信息
+    QVector<int> getLinkedHome();//返回已经建立连接的房间号
 };
 
 #endif // MTCPSEVER_H

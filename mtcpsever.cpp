@@ -35,3 +35,35 @@ void mTcpSever::SeverNewConnection()
     msocket[i].mSocket = this->qTcpServer->nextPendingConnection();
     msocket[i].setIsVaild(true);
 }
+
+void mTcpSever::send2home(int home, exchangeInfo info)
+{
+    int i = 0;
+    for(;i < MAX_CONNECT; i++)
+    {
+        if(msocket[i].getHome() == home)
+            break;
+    }
+
+    if(i == MAX_CONNECT)
+    {
+        QMessageBox::about(NULL,"信息错误","发送的房间号未找到");
+        return;
+    }
+
+    msocket[i].sendInfo = info;//先写入信息
+    msocket[i].severWriteDate();
+}
+
+QVector<int> mTcpSever::getLinkedHome()
+{
+    Vector<int> vec;
+    for(int i = 0; i < MAX_CONNECT; i++)
+    {
+        if(msocket[i].getIsVaild() == true)
+        {
+            vec<<msocket[i].getHome();
+        }
+    }
+    return vec;
+}
