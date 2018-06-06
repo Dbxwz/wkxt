@@ -1,4 +1,9 @@
 #include "mtcpsocket.h"
+#include "usercontroler.h"
+#include "logcontroler.h"
+
+#define SEND_TIME 50
+#define TIME_OUT_TTL 50
 
 mTcpSocket::mTcpSocket()
 {
@@ -9,7 +14,16 @@ mTcpSocket::mTcpSocket()
 
 void mTcpSocket::run()
 {
-
+    QTime startTime = QTime::currentTime();
+    while(true)
+    {
+        exchangeInfo obj();
+        QVector<double> vec = logControler::askEnergyAndCost(this->getHome());
+        obj.energyAndCost(vec[0],vec[1]);
+        QTime endtime = QTime::currentTime();
+        if(endtime.msecsTo(startTime) % SEND_TIME == 0)//50ms重传一次
+           this->mSocket->write(info.toByte());//超时重传
+    }
 }
 
 void mTcpSocket::severReadDate()
@@ -26,20 +40,20 @@ void mTcpSocket::severReadDate()
      QString type = obj.getType();
      if(type.compare("AskWindSupply"))
      {
-         //调用报表函数处理
+         logControler::windSupplyHandle(obj.getRoom(),obj.getTem(),obj.getWindSpeed(),obj.getWindType());
          exchangeInfo reply;
          reply.replyForWindSupply(true);
          this->mSocket->write(reply.toByte());
      } else if(type.compare("StopWindSupply"))
      {
-         //.....
+         logControler::stopWindHandle(obj.getRoom());
          exchangeInfo reply;
          reply.replyForStopWindSupply(true);
          this->mSocket->write(reply.toByte());
      } else if(type.compare("AskLogin"))
      {
          exchangeInfo reply;
-         if(true)//此处需要接口
+         if(userControler::testHome(obj.getRoom(),obj.getID())//此处需要接口
          {
              reply.replyForLogin(true);
              this->setHome(obj.getRoom());
@@ -55,7 +69,7 @@ void mTcpSocket::severReadDate()
          emit this->socket_disconnect();
      } else if(type.compare("State"))
      {
-         //..
+         logControler::stateHandle(obj.getRoom(),obj.getTem());
          exchangeInfo reply;
          reply.replyForState(true);
          this->mSocket->write(reply.toByte());
@@ -83,7 +97,7 @@ void mTcpSocket::waitAck(exchangeInfo info)
          if(obj.getType() == "ReplyForEnergyAndCost")
              break;
          QTime endtime = QTime::currentTime();
-         if(endtime.msecsTo(startTime) % 50 == 0)//50ms重传一次
+         if(endtime.msecsTo(startTime) % TIME_OUT_TTL == 0)//50ms重传一次
             this->mSocket->write(info.toByte());//超时重传
      }
  }

@@ -30,7 +30,8 @@ SOURCES += \
     mtcpsocket.cpp \
     mtcpsever.cpp \
     loginfo.cpp \
-    usercontroler.cpp
+    usercontroler.cpp \
+    logcontroler.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     mtcpsocket.h \
     mtcpsever.h \
     loginfo.h \
-    usercontroler.h
+    usercontroler.h \
+    logcontroler.h
 
 FORMS += \
         mainwindow.ui
